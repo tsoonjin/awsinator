@@ -1,0 +1,107 @@
+{
+    "MetricDataQueries": [
+        {
+            "Id": "request",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "Count",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "Sum"
+            },
+            "Label": "Total Requests",
+            "ReturnData": true
+        },
+        {
+            "Id": "error4XX",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "4XXError",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "Sum"
+            },
+            "Label": "4XX Error",
+            "ReturnData": true
+        },
+        {
+            "Id": "error5XX",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "5XXError",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "Sum"
+            },
+            "Label": "5XX Error",
+            "ReturnData": true
+        },
+        {
+            "Id": "avgLatency",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "Latency",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "Average"
+            },
+            "Label": "AVG Latency",
+            "ReturnData": true
+        },
+        {
+            "Id": "p99Latency",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "Latency",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "p99"
+            },
+            "Label": "P99 Latency",
+            "ReturnData": true
+        },
+        {
+            "Id": "errorRate",
+            "Expression": "error5XX / request",
+            "Label": "Error Rate",
+            "ReturnData": true
+        }
+    ],
+    "StartTime": "$START_TIME",
+    "EndTime": "$END_TIME"
+}

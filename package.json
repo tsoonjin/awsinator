@@ -1,0 +1,43 @@
+{
+  "name": "awsinator",
+  "version": "1.0.0",
+  "description": "A wrapper around AWS SDK that provide commonly run tasks out of the box",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "lint": "eslint '**/*.js'",
+    "lint:fix": "npm run lint --fix",
+    "test:local": "cross-env AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=awsinator node ./src/awsinator.js -c './example/service-metrics-email/config.json'"
+  },
+  "bin": {
+    "awsinator": "./src/awsinator.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsoonjin/awsinator.git"
+  },
+  "keywords": [
+    "aws",
+    "sdk",
+    "dashboard",
+    "email",
+    "metrics"
+  ],
+  "author": "Jin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsoonjin/awsinator/issues"
+  },
+  "homepage": "https://github.com/tsoonjin/awsinator#readme",
+  "dependencies": {
+    "aws-sdk": "^2.757.0",
+    "mjml": "^4.7.0",
+    "mjml-utils": "^2.2.1",
+    "yargs": "^13.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb": "^18.2.0"
+  }
+}

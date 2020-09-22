@@ -1,0 +1,244 @@
+{
+    "region": "ap-southeast-1",
+    "service": "de-awani-hooks production",
+    "email": {
+      "source": "sjtsoonj@astro.com.my",
+      "destination":
+            {
+              "ToAddresses":  ["soon-jin_tan@astro.com.my"],
+              "CcAddresses":  [],
+              "BccAddresses": []
+            }
+    },
+    "apigw":
+{
+    "MetricDataQueries": [
+        {
+            "Id": "request",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "Count",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Sum"
+            },
+            "Label": "Total Requests",
+            "ReturnData": true
+        },
+        {
+            "Id": "error4XX",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "4XXError",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Sum"
+            },
+            "Label": "4XX Error",
+            "ReturnData": true
+        },
+        {
+            "Id": "error5XX",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "5XXError",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Sum"
+            },
+            "Label": "5XX Error",
+            "ReturnData": true
+        },
+        {
+            "Id": "avgLatency",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "Latency",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Average"
+            },
+            "Label": "AVG Latency",
+            "ReturnData": true
+        },
+        {
+            "Id": "p99Latency",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/ApiGateway",
+                    "MetricName": "Latency",
+                    "Dimensions": [
+                        {
+                            "Name": "ApiName",
+                            "Value": "de-awani-hooks production"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "p99"
+            },
+            "Label": "P99 Latency",
+            "ReturnData": true
+        },
+        {
+            "Id": "errorRate",
+            "Expression": "error5XX / request",
+            "Label": "Error Rate",
+            "ReturnData": true
+        }
+    ],
+    "StartTime": "2020-07-01T00:00:0000",
+    "EndTime": "2020-07-02T00:00:0000"
+},
+"lambda":
+{
+    "MetricDataQueries": [
+        {
+            "Id": "request",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/Lambda",
+                    "MetricName": "Invocations",
+                    "Dimensions": [
+                        {
+                            "Name": "FunctionName",
+                            "Value": "de-awani-hooks-prd-createArticles"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Sum"
+            },
+            "Label": "Requests",
+            "ReturnData": true
+        },
+        {
+            "Id": "error",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/Lambda",
+                    "MetricName": "Errors",
+                    "Dimensions": [
+                        {
+                            "Name": "FunctionName",
+                            "Value": "de-awani-hooks-prd-createArticles"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Sum"
+            },
+            "Label": "Errors",
+            "ReturnData": true
+        },
+        {
+            "Id": "errorRate",
+            "Expression": "error / request",
+            "Label": "Error Rate",
+            "ReturnData": true
+        },
+        {
+            "Id": "duration",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/Lambda",
+                    "MetricName": "Duration",
+                    "Dimensions": [
+                        {
+                            "Name": "FunctionName",
+                            "Value": "de-awani-hooks-prd-createArticles"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Average"
+            },
+            "Label": "Durations",
+            "ReturnData": true
+        }
+    ],
+    "StartTime": "2020-08-01T00:00:0000",
+    "EndTime": "2020-08-01T23:00:0000"
+},
+"cf":
+{
+    "MetricDataQueries": [
+        {
+            "Id": "request",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/CloudFront",
+                    "MetricName": "Requests",
+                    "Dimensions": [
+                        {
+                            "Name": "DistributionId",
+                            "Value": "EUDQFRH1V8OGU"
+                        },
+                        {
+                            "Name": "Region",
+                            "Value": "Global"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Sum"
+            },
+            "Label": "Total Requests",
+            "ReturnData": true
+        },
+        {
+            "Id": "totalErrorRate",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/CloudFront",
+                    "MetricName": "TotalErrorRate",
+                    "Dimensions": [
+                        {
+                            "Name": "DistributionId",
+                            "Value": "EUDQFRH1V8OGU"
+                        },
+                        {
+                            "Name": "Region",
+                            "Value": "Global"
+                        }
+                    ]
+                },
+                "Period": 604800,
+                "Stat": "Average"
+            },
+            "Label": "Total Error Rate",
+            "ReturnData": true
+        }
+    ],
+    "StartTime": "2020-08-01T00:00:0000",
+    "EndTime": "2020-08-01T23:00:0000"
+}
+}

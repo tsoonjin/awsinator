@@ -1,0 +1,52 @@
+{
+    "MetricDataQueries": [
+        {
+            "Id": "request",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/CloudFront",
+                    "MetricName": "Requests",
+                    "Dimensions": [
+                        {
+                            "Name": "DistributionId",
+                            "Value": "EUDQFRH1V8OGU"
+                        },
+                        {
+                            "Name": "Region",
+                            "Value": "Global"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "Sum"
+            },
+            "Label": "Total Requests",
+            "ReturnData": true
+        },
+        {
+            "Id": "totalErrorRate",
+            "MetricStat": {
+                "Metric": {
+                    "Namespace": "AWS/CloudFront",
+                    "MetricName": "TotalErrorRate",
+                    "Dimensions": [
+                        {
+                            "Name": "DistributionId",
+                            "Value": "EUDQFRH1V8OGU"
+                        },
+                        {
+                            "Name": "Region",
+                            "Value": "Global"
+                        }
+                    ]
+                },
+                "Period": 86400,
+                "Stat": "Average"
+            },
+            "Label": "Total Error Rate",
+            "ReturnData": true
+        }
+    ],
+    "StartTime": "2020-08-01T00:00:0000",
+    "EndTime": "2020-08-01T23:00:0000"
+}
