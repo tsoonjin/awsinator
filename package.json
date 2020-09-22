@@ -34,7 +34,11 @@
     "aws-sdk": "^2.757.0",
     "mjml": "^4.7.0",
     "mjml-utils": "^2.2.1",
+    "module-alias": "^2.2.2",
     "yargs": "^13.2.4"
+  },
+  "_moduleAliases": {
+    "@config": "src/config"
   },
   "devDependencies": {
     "eslint": "^7.9.0",

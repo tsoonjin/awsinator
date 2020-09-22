@@ -2,8 +2,8 @@
     "region": "ap-southeast-1",
     "service": "de-awani-hooks production",
     "email": {
-      "source": "sjtsoonj@astro.com.my",
-      "destination":
+      "senderEmail": "sjtsoonj@astro.com.my",
+      "targetEmails":
             {
               "ToAddresses":  ["soon-jin_tan@astro.com.my"],
               "CcAddresses":  [],
