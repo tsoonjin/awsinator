@@ -1,6 +1,6 @@
 {
   "name": "awsinator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A wrapper around AWS SDK that provide commonly run tasks out of the box",
   "directories": {
     "example": "example"
