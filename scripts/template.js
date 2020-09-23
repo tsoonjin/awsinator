@@ -1,4 +1,29 @@
 /**
+ * Create time series widget
+*/
+const createCFWidget = (title, y, period, api, region="ap-southeast-1") => {
+    type: "metric",
+    height: 3,
+    width: 24,
+    x: 0,
+    y,
+    properties: {
+        period,
+        region,
+        title,
+        setPeriodToTimeRange: true,
+        stat: "Sum"
+        view: "singleValue",
+        metrics: [
+            ["AWS/ApiGateway", "Count", "ApiName", api.name, "Resource", api.path, "Stage", api.stage, "Method", api.method],
+            [".", "Latency", ".", ".", ".", ".", ".", ".", ".", ".", {stat: true}],
+            [".", "4XXError", ".", ".", ".", ".", ".", ".", ".", "."],
+            [".", "5XXError", ".", ".", ".", ".", ".", ".", ".", "."],
+        ]
+    }
+}
+
+/**
  * Create widget with single value
  * Typically used to report API Gateway and Lambda
 */

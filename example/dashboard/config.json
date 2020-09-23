@@ -1,0 +1,22 @@
+{
+    "region": "ap-southeast-1",
+    "service": "DE-Webhook-Prod",
+    "apigw": {
+        "resources": [
+            {
+                "name": "de-awani-hooks production",
+                "stage": "prod"
+            }
+        ]
+    },
+    "lambda": {
+        "resources": [
+            {
+                "name": "de-awani-hooks-prd-createArticles"
+            },
+            {
+                "name": "de-awani-hooks-prd-syncHeroStories"
+            }
+        ]
+    }
+}

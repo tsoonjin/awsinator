@@ -2,9 +2,9 @@
 process.env.AWS_SDK_LOAD_CONFIG = true;
 
 const fs = require('fs');
-const path = require('path');
 const yargs = require("yargs");
 const mail = require("./mail")
+const dashboard = require("./dashboard")
 const metric = require("./metric")
 
 // Config setup
@@ -18,11 +18,14 @@ const defaultConfig = './config.json'
 const config = JSON.parse(
   fs.readFileSync(options.config || defaultConfig, 'utf-8')
 );
-const {
-  apigw, service, lambda, region, email
-} = config;
 
-(async () => {
+// Supported functionalities
+
+const sendReportEmail = async () => {
+  const {
+      apigw, service, lambda, region, email
+  } = config;
+
   try {
     const dateNow = new Date();
     const firstDayOfTheWeek = dateNow.getDate() - dateNow.getDay() + 1; // Remove + 1 if sunday is first day of the week.
@@ -45,4 +48,16 @@ const {
   } catch (e) {
     console.error(e);
   }
+}
+
+(async () => {
+    const { service, apigw, lambda } = config
+    if (options.email) {
+        console.log("Send service metrics email")
+        await sendReportEmail()
+    }
+    if (options.dashboard) {
+        console.log("Create dashboard")
+        await dashboard.createDashboard(`${service}-AutoTest`, { apigw, lambda })
+    }
 })();
