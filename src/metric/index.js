@@ -4,6 +4,8 @@ const cw = new AWS.CloudWatch({
   apiVersion: '2010-08-01',
 });
 
+const { basicApiGatewayTemplate, basicLambdaTemplate } = require('./template')
+
 const formatRequest = (params) => {
   const dateNow = new Date()
   const firstDayLastWk = new Date(dateNow)
@@ -21,11 +23,13 @@ const formatRequest = (params) => {
 
 const getServiceMetrics = async (config) => {
     const { apigw, service, lambda } = config
+    const apigwRequest = formatRequest(basicApiGatewayTemplate(apigw.resources[0].name))
+    const lambdaRequest = formatRequest(basicLambdaTemplate(lambda.resources[0].name))
     const { MetricDataResults: apigwRes } = await cw
-        .getMetricData(formatRequest(apigw))
+        .getMetricData(apigwRequest)
         .promise();
     const { MetricDataResults: lambdaRes } = await cw
-        .getMetricData(formatRequest(lambda))
+        .getMetricData(lambdaRequest)
         .promise();
 
     // Format email

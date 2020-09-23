@@ -12,6 +12,7 @@ A wrapper around AWS SDK that provide out-of-the-box command to execute common t
 ## Weekly Email Reporting
 
 - define your configuration (refer to `example/service-metrics-email/config.json`)
+- currently it only supports one lambda and one apigateway reporting
 - `awsinator --email -c config.json`
 
 ## Basic Dashboard Creation
