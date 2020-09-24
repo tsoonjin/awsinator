@@ -4,12 +4,15 @@ const cw = new AWS.CloudWatch({
   apiVersion: '2010-08-01',
 });
 
+const ld = new AWS.Lambda({
+    apiVersion: '2015-03-31'}
+);
 
 /**
  * Create widget with single value
  * Typically used to report API Gateway and Lambda
 */
-const createAPIGWWidget = (api, y, period=300, region="ap-southeast-1") => ({
+const createMainAPIGWWidget = (api, y, period=300, region="ap-southeast-1") => ({
     type: "metric",
     height: 3,
     width: 24,
@@ -57,27 +60,37 @@ const createLambdaWidget = (lambda, y, period=300, region="ap-southeast-1") => (
     }
 })
 
-const createDashboardBody = (resources) => {
+const createDashboardBody = async (resources) => {
     let x, y = 0
     const widgets = []
     const { apigw, lambda } = resources
-    apigw.resources.forEach((api) => {
-        widgets.push(createAPIGWWidget(api, y))
+    if (apigw) {
+        widgets.push(createMainAPIGWWidget(apigw, y))
         y = y + 3
-    })
-    lambda.resources.forEach((lambda) => {
-        widgets.push(createLambdaWidget(lambda, y))
-        y = y + 3
-    })
+    }
+    if (lambda.resources.length > 0) {
+        lambda.resources.forEach((l) => {
+            widgets.push(createLambdaWidget(l, y))
+            y = y + 3
+        })
+    } else {
+        console.log("Listing all functions that match name")
+        const functions = await ld.listFunctions({ MaxItems: 500 }).promise()
+        const functionNames = functions.Functions.filter(l => l.FunctionName.startsWith(lambda.name)).map(l => ({ name: l.FunctionName }))
+        functionNames.forEach((l) => {
+            widgets.push(createLambdaWidget(l, y))
+            y = y + 3
+        })
+    }
     return widgets
 }
 
-const createDashboard = (name, resources) => {
-    const dashboardBody = { widgets: createDashboardBody(resources) }
-    console.log(dashboardBody)
+const createDashboard = async (name, resources) => {
+    const widgets = await createDashboardBody(resources)
+    console.log(widgets)
     return cw.putDashboard({
         DashboardName: name,
-        DashboardBody: JSON.stringify(dashboardBody)
+        DashboardBody: JSON.stringify({ widgets })
     }).promise()
 }
 
