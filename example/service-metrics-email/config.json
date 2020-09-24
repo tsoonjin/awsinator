@@ -1,6 +1,6 @@
 {
     "region": "ap-southeast-1",
-    "service": "de-awani-hooks production",
+    "service": "Weekly Service Metrics",
     "email": {
       "senderEmail": "sjtsoonj@astro.com.my",
       "targetEmails":

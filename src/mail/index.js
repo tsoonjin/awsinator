@@ -6,10 +6,66 @@ const ses = new AWS.SES({
   apiVersion: '2010-12-01'
 });
 
+const generateApiGatewayTable = (req) => {
+    const { name, metrics: api } = req
+    return `
+        <mj-table font-size="12px">
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <th style="padding: 0.5em;">${name}</td>
+            <th style="padding: 0.5em;">Metric</td>
+            <th style="padding: 0.5em;">Changes (%)</td>
+          </tr>
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <td style="padding: 0.5em;">Total Requests</td>
+            <td style="padding: 0.5em;">${api.request.value}</td>
+            <td style="padding: 0.5em;">${api.request.delta || ''}</td>
+          </tr>
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <td style="padding: 0.5em;">Avg Latency (ms)</td>
+            <td style="padding: 0.5em;">${api.avgLatency.value}</td>
+            <td style="padding: 0.5em;">${api.avgLatency.delta || ''}</td>
+          </tr>
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <td style="padding: 0.5em;">Error Rate</td>
+            <td style="padding: 0.5em;">${api.errorRate.value}</td>
+            <td style="padding: 0.5em;">${api.errorRate.delta || ''}</td>
+          </tr>
+        </mj-table>`
+}
+
+const generateLambdaTable = (req) => {
+    const { name, metrics: lambda } = req
+    return `
+        <mj-table font-size="12px">
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <th style="padding: 0.5em;">${name}</td>
+            <th style="padding: 0.5em;">Metric</td>
+            <th style="padding: 0.5em;">Changes (%)</td>
+          </tr>
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <td style="padding: 0.5em;">Total Requests</td>
+            <td style="padding: 0.5em;">${lambda.request.value}</td>
+            <td style="padding: 0.5em;">${lambda.request.delta || ''}</td>
+          </tr>
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <td style="padding: 0.5em;">Duration (ms)</td>
+            <td style="padding: 0.5em;">${lambda.duration.value}</td>
+            <td style="padding: 0.5em;">${lambda.duration.delta || ''}</td>
+          </tr>
+          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
+            <td style="padding: 0.5em;">Error Rate</td>
+            <td style="padding: 0.5em;">${lambda.errorRate.value}</td>
+            <td style="padding: 0.5em;">${lambda.errorRate.delta || ''}</td>
+          </tr>
+        </mj-table>`
+}
+
 /*
   Compile an mjml string
 */
-const generateHTML = (name, metrics) => mjml2html(`
+const generateHTML = (name, metrics) => {
+    const { apigw, lambda } = metrics
+    return mjml2html(`
 <mjml>
   <mj-body width="1000px">
     <!-- Company Header -->
@@ -25,46 +81,16 @@ const generateHTML = (name, metrics) => mjml2html(`
     <mj-section>
       <mj-column>
         <mj-text align='left' font-size="20px">API Gateway Metrics</mj-text>
-        <mj-table font-size="12px">
-          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
-            <th style="padding: 0.5em;">Service</td>
-            <th style="padding: 0.5em;">Requests</td>
-            <th style="padding: 0.5em;">4XX Errors</td>
-            <th style="padding: 0.5em;">5XX Errors</td>
-            <th style="padding: 0.5em;">Avg Latency</td>
-            <th style="padding: 0.5em;">P99 Latency</td>
-          </tr>
-          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
-            <td style="padding: 0.5em;">${metrics.service}</td>
-            <td style="padding: 0.5em;">${metrics.apigw.request}</td>
-            <td style="padding: 0.5em;">${metrics.apigw.error4XX}</td>
-            <td style="padding: 0.5em;">${metrics.apigw.error5XX}</td>
-            <td style="padding: 0.5em;">${metrics.apigw.avgLatency}</td>
-            <td style="padding: 0.5em;">${metrics.apigw.p99Latency}</td>
-          </tr>
-        </mj-table>
+        ${apigw.map(api => generateLambdaTable(api)).join('\n')}
         <mj-divider padding="30px" border-width="0px" />
-
         <mj-text align='left' font-size="20px">Lambda Metrics</mj-text>
-        <mj-table font-size="12px">
-          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
-            <th style="padding: 0.5em;">Service</td>
-            <th style="padding: 0.5em;">Requests</td>
-            <th style="padding: 0.5em;">Errors</td>
-            <th style="padding: 0.5em;">Durations</td>
-          </tr>
-          <tr style="border:1px solid #ecedee;text-align:left;padding:15px 0;">
-            <td style="padding: 0.5em;">${metrics.service}</td>
-            <td style="padding: 0.5em;">${metrics.lambda.request}</td>
-            <td style="padding: 0.5em;">${metrics.lambda.error}</td>
-            <td style="padding: 0.5em;">${metrics.lambda.duration}</td>
-          </tr>
-        </mj-table>
+        ${lambda.map(l => generateLambdaTable(l)).join('\n')}
       </mj-column>
     </mj-section>
   </mj-body>
 </mjml>
 `);
+}
 
 const generateMessageBody = (name, content, startDate, endDate) => ({
   Subject: {
