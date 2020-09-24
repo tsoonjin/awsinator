@@ -81,7 +81,7 @@ const generateHTML = (name, metrics) => {
     <mj-section>
       <mj-column>
         <mj-text align='left' font-size="20px">API Gateway Metrics</mj-text>
-        ${apigw.map(api => generateLambdaTable(api)).join('\n')}
+        ${apigw.map(api => generateApiGatewayTable(api)).join('\n')}
         <mj-divider padding="30px" border-width="0px" />
         <mj-text align='left' font-size="20px">Lambda Metrics</mj-text>
         ${lambda.map(l => generateLambdaTable(l)).join('\n')}
