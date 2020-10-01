@@ -127,7 +127,7 @@ const createDashboard = async (name, resources) => {
 const createAlarms = async (api, alarmActions) => {
     const resources = await apigateway.getResources({ restApiId: api.id }).promise()
     const items = resources.items.filter(i => i.resourceMethods);
-    for (let i=0; i < 2; i++) {
+    for (let i=0; i < items.length; i++) {
         const apiParams = {
             name: api.name,
             stage: api.stage,
