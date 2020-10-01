@@ -1,8 +1,13 @@
 {
     "region": "ap-southeast-1",
     "service": "DE-Webhook-Prod",
+    "alarmActions": [
+        "arn:aws:sns:ap-southeast-1:741224295950:de-generic-alarm"
+    ],
     "apigw": {
         "name": "de-feed-service production",
+        "id": "m4ljez7kyb",
+        "stage": "prd",
         "resources": []
     },
     "lambda": {
