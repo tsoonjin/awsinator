@@ -51,14 +51,14 @@ const sendReportEmail = async () => {
 }
 
 (async () => {
-    const { service, apigw, lambda, alarmActions } = config
+    const { service, apigw, lambda, alarmActions, cf } = config
     if (options.email) {
         console.log("Send service metrics email")
         await sendReportEmail()
     }
     if (options.dashboard) {
         console.log("Create dashboard")
-        await dashboard.createDashboard(`${service}-AutoTest`, { apigw, lambda })
+        await dashboard.createDashboard(`${service}-AutoTest`, { apigw, lambda, cf })
     }
     if (options.alarm) {
         console.log("Create alarms")

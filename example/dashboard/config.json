@@ -4,6 +4,10 @@
     "alarmActions": [
         "arn:aws:sns:ap-southeast-1:741224295950:de-generic-alarm"
     ],
+    "cf": {
+        "name": "DE Awani Backend",
+        "id": "EUDQFRH1V8OGU"
+    },
     "apigw": {
         "name": "de-feed-service production",
         "id": "m4ljez7kyb",

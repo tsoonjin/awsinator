@@ -165,6 +165,62 @@ const createAPIGWLatencyAlarm = (api, alarmActions) => ({
     Unit: "Milliseconds"
 })
 
+const createCFRequestsWidget = (cf, x, y, region='us-east-1', period=300) => ({
+    type: "metric",
+    height: 6,
+    width: 10,
+    x,
+    y,
+    properties: {
+        period,
+        region,
+        title: `${cf.name} Requests`,
+        setPeriodToTimeRange: true,
+        stacked: false,
+        yAxis: {
+            left: {
+                showUnits: false
+            },
+            right: {
+                showUnits: false
+            }
+        },
+        stat: "Sum",
+        view: "timeSeries",
+        metrics: [[ "AWS/CloudFront", "Requests", "Region", "Global", "DistributionId", cf.id ]]
+    }
+})
+
+const createCFErrorRateWidget = (cf, x, y, region='us-east-1', period=300) => ({
+    type: "metric",
+    height: 6,
+    width: 10,
+    x,
+    y,
+    properties: {
+        period,
+        region,
+        title: `${cf.name} Error Rate`,
+        setPeriodToTimeRange: true,
+        stacked: false,
+        yAxis: {
+            left: {
+                showUnits: false
+            },
+            right: {
+                showUnits: false
+            }
+        },
+        stat: "Sum",
+        view: "timeSeries",
+        metrics:  [
+            [ "AWS/CloudFront", "TotalErrorRate", "Region", "Global", "DistributionId", cf.id ],
+            [ ".", "4xxErrorRate", ".", ".", ".", ".", { "label": "Total4xxErrors" } ],
+            [ ".", "5xxErrorRate", ".", ".", ".", ".", { "label": "Total5xxErrors" } ]
+        ],
+    }
+})
+
 /**
  * Create widget with single value
  * Typically used to report API Gateway and Lambda
@@ -222,9 +278,16 @@ const createLambdaWidget = (lambda, y, period=300, region="ap-southeast-1") => (
 })
 
 const createDashboardBody = async (resources) => {
-    let x, y = 0
+    let x = 0
+    let y = 0
     const widgets = []
-    const { apigw, lambda } = resources
+    const { apigw, lambda, cf} = resources
+    if (cf) {
+        widgets.push(createCFRequestsWidget(cf, x, y))
+        x = x + 12
+        widgets.push(createCFErrorRateWidget(cf, x, y))
+        y = y + 6
+    }
     if (apigw) {
         widgets.push(createMainAPIGWWidget(apigw, y))
         y = y + 3
