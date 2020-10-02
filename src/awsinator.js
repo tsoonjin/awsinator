@@ -62,6 +62,6 @@ const sendReportEmail = async () => {
     }
     if (options.alarm) {
         console.log("Create alarms")
-        await dashboard.createAlarms(apigw, alarmActions)
+        await dashboard.createAlarms(apigw, lambda, alarmActions)
     }
 })();

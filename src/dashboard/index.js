@@ -13,7 +13,138 @@ const ld = new AWS.Lambda({
     apiVersion: '2015-03-31'}
 );
 
-const createAPIGWAlarm = (api, alarmActions) => ({
+const createLambdaErrorRateAlarm = (lambda, alarmActions) => ({
+    AlarmName: `lambda [${lambda.name}] Error Rate > 0.3`, /* required */
+    ComparisonOperator: "GreaterThanThreshold",
+    EvaluationPeriods: 1, // Hourly basis
+    AlarmActions: alarmActions,
+    AlarmDescription: 'Automatically created alarm for lambda response with error rate > 0.3',
+    DatapointsToAlarm: 1,
+    Threshold: 0.3,
+    Metrics: [
+        {
+            Id: 'request',
+            MetricStat: {
+                Metric: {
+                    Namespace: 'AWS/Lambda',
+                    MetricName: 'Invocations',
+                    Dimensions: [
+                        {
+                            Name: 'FunctionName',
+                            Value: lambda.name
+                        }
+                    ]
+                },
+                Period: 1800,
+                Stat: 'Sum'
+            },
+            Label: 'Requests',
+            ReturnData: false
+        },
+        {
+            Id: 'error',
+            MetricStat: {
+                Metric: {
+                    Namespace: 'AWS/Lambda',
+                    MetricName: 'Errors',
+                    Dimensions: [
+                        {
+                            Name: 'FunctionName',
+                            Value: lambda.name
+                        }
+                    ]
+                },
+                Period: 1800,
+                Stat: 'Sum'
+            },
+            Label: 'Errors',
+            ReturnData: false
+        },
+        {
+            Id: 'errorRate',
+            Expression: 'error / request',
+            Label: 'Error Rate',
+            ReturnData: true
+        },
+    ]
+})
+
+const createAPIGWErrorRateAlarm = (api, alarmActions) => ({
+    AlarmName: `API [${api.name}] [${api.resource}] Error Rate > 0.3`, /* required */
+    ComparisonOperator: "GreaterThanThreshold",
+    EvaluationPeriods: 1, // Hourly basis
+    AlarmActions: alarmActions,
+    AlarmDescription: 'Automatically created alarm for API response with error rate > 0.3',
+    DatapointsToAlarm: 1,
+    Threshold: 0.3,
+    Metrics: [
+      {
+        Id: 'request',
+        MetricStat: {
+          Metric: {
+            Namespace: 'AWS/ApiGateway',
+            MetricName: 'Count',
+            Dimensions: [
+                { Name: 'ApiName', Value: api.name},
+                { Name: 'Resource', Value: api.resource},
+                { Name: 'Method', Value: api.method},
+                { Name: 'Stage', Value: api.stage},
+            ],
+          },
+          Period: 1800,
+          Stat: 'Sum'
+        },
+        Label: 'Total Requests',
+        ReturnData: false
+      },
+      {
+        Id: 'error4XX',
+        MetricStat: {
+          Metric: {
+            Namespace: 'AWS/ApiGateway',
+            MetricName: '4XXError',
+            Dimensions: [
+                { Name: 'ApiName', Value: api.name},
+                { Name: 'Resource', Value: api.resource},
+                { Name: 'Method', Value: api.method},
+                { Name: 'Stage', Value: api.stage},
+            ],
+          },
+          Period: 1800,
+          Stat: 'Sum'
+        },
+        Label: '4XX Error',
+        ReturnData: false
+      },
+      {
+        Id: 'error5XX',
+        MetricStat: {
+          Metric: {
+            Namespace: 'AWS/ApiGateway',
+            MetricName: '5XXError',
+            Dimensions: [
+                { Name: 'ApiName', Value: api.name},
+                { Name: 'Resource', Value: api.resource},
+                { Name: 'Method', Value: api.method},
+                { Name: 'Stage', Value: api.stage},
+            ],
+          },
+          Period: 1800,
+          Stat: 'Sum'
+        },
+        Label: '5XX Error',
+        ReturnData: false
+      },
+      {
+        Id: 'errorRate',
+        Expression: '(error5XX + error4XX) / request',
+        Label: 'Error Rate',
+        ReturnData: true
+      }
+    ]
+})
+
+const createAPIGWLatencyAlarm = (api, alarmActions) => ({
     AlarmName: `API [${api.name}] [${api.resource}] p99 Latency > 3s`, /* required */
     ComparisonOperator: "GreaterThanThreshold",
     EvaluationPeriods: 1, // Hourly basis
@@ -124,9 +255,12 @@ const createDashboard = async (name, resources) => {
     }).promise()
 }
 
-const createAlarms = async (api, alarmActions) => {
+const createAlarms = async (api, lambda, alarmActions) => {
     const resources = await apigateway.getResources({ restApiId: api.id }).promise()
     const items = resources.items.filter(i => i.resourceMethods);
+
+    // API Gateway Alarm construction
+
     for (let i=0; i < items.length; i++) {
         const apiParams = {
             name: api.name,
@@ -134,8 +268,19 @@ const createAlarms = async (api, alarmActions) => {
             resource: items[i].path,
             method: Object.keys(items[i].resourceMethods).filter(i => i !== 'OPTIONS')[0]
         }
-        const params = createAPIGWAlarm(apiParams, alarmActions)
-        await cw.putMetricAlarm(params).promise()
+        // const params = createAPIGWLatencyAlarm(apiParams, alarmActions)
+        await cw.putMetricAlarm(
+            createAPIGWErrorRateAlarm(apiParams, alarmActions)
+        ).promise()
+        await cw.putMetricAlarm(
+            createAPIGWLatencyAlarm(apiParams, alarmActions)
+        ).promise()
+    }
+
+    for (let i=0; i < lambda.resources.length; i++) {
+        await cw.putMetricAlarm(
+            createLambdaErrorRateAlarm(lambda.resources[i], alarmActions)
+        ).promise()
     }
 }
 

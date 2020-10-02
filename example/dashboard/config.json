@@ -12,6 +12,9 @@
     },
     "lambda": {
         "name": "de-awani-hooks-prd",
-        "resources": []
+        "resources": [
+            { "name": "de-awani-hooks-prd-createArticles" },
+            { "name": "de-awani-hooks-prd-deleteArticles" }
+        ]
     }
 }
