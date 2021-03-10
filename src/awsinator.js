@@ -58,7 +58,7 @@ const sendReportEmail = async () => {
     }
     if (options.dashboard) {
         console.log("Create dashboard")
-        await dashboard.createDashboard(`${service}-AutoTest`, { apigw, lambda, cf })
+        await dashboard.createDashboard(`${service}-Auto`, { apigw, lambda, cf })
     }
     if (options.alarm) {
         console.log("Create alarms")
