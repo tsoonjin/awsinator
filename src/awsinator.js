@@ -10,8 +10,9 @@ const metric = require("./metric")
 // Config setup
 
 const options = yargs
- .usage("Usage: -c <config>")
+ .usage("Usage: -c <config> -o <dashboard_name>")
  .option("c", { alias: "config", describe: "Config file", type: "string"})
+ .option("o", { alias: "output", describe: "Dashboard Name", type: "string"})
  .argv;
 
 const defaultConfig = './config.json'
@@ -58,7 +59,7 @@ const sendReportEmail = async () => {
     }
     if (options.dashboard) {
         console.log("Create dashboard")
-        await dashboard.createDashboard(`${service}-Auto`, { apigw, lambda, cf })
+        await dashboard.createDashboard(options.output || `${service}-Auto`, { apigw, lambda, cf })
     }
     if (options.alarm) {
         console.log("Create alarms")

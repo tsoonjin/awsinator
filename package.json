@@ -9,7 +9,7 @@
     "lint": "eslint '**/*.js'",
     "lint:fix": "npm run lint --fix",
     "test:email": "cross-env AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=awsinator node ./src/awsinator.js --email -c './example/service-metrics-email/config.json'",
-    "test:dashboard": "cross-env AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=astro-acm-nonprod node ./src/awsinator.js --dashboard -c './example/dashboard/config.json'",
+    "test:dashboard": "cross-env AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=astro-acm-nonprod node ./src/awsinator.js --dashboard -c './example/dashboard/myastro-dashboard-config.json'",
     "test:alarm": "cross-env AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=awsinator node ./src/awsinator.js --alarm -c './example/dashboard/config.json'",
     "test:report": "cross-env AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=awsinator node ./src/awsinator.js --report -c './example/monthly-backend.json'"
   },
